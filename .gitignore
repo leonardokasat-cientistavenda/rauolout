@@ -1,0 +1,15 @@
+# dados brutos do banco — NUNCA commitar (mistura transações pessoais)
+data/extratos/*.csv
+data/extratos/*.pdf
+data/extratos/*.xlsx
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# editor
+.vscode/
+.idea/
+*.swp
+.DS_Store

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Início — Fundo Raul</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0E0D0B; --paper: #18160F; --paper-2: #221E14;
+  --ink: #F8F4EC; --ink-soft: #D8CFC0; --muted: #8B7F6D; --muted-light: #5C5446;
+  --gold: #F5B82E; --gold-dark: #C9971F; --amber: #E89B2C;
+  --line: rgba(245,184,46,0.18); --line-strong: rgba(245,184,46,0.35);
+  --in: #F5B82E; --out: #E05548;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Nunito Sans', -apple-system, sans-serif; background:var(--bg); color:var(--ink); line-height:1.6;
+  background-image: radial-gradient(ellipse at top, rgba(245,184,46,0.06), transparent 60%); }
+
+.topbar { background:rgba(14,13,11,0.92); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line); padding:14px 32px;
+  display:flex; align-items:center; gap:16px; position:sticky; top:0; z-index:50; }
+.topbar-brand { font-family:'Anton', sans-serif; font-weight:400; color:var(--ink); font-size:20px;
+  letter-spacing:0.04em; text-transform:uppercase; }
+.topbar-brand em { font-style:normal; color:var(--gold); }
+.topbar-path { font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--muted); flex:1;
+  letter-spacing:0.08em; text-transform:uppercase; }
+.topbar-links { display:flex; gap:8px; }
+.topbar-links a { font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700;
+  color:var(--ink-soft); text-decoration:none; padding:6px 12px; border:1px solid var(--line);
+  border-radius:4px; letter-spacing:0.12em; text-transform:uppercase; transition:all .15s; }
+.topbar-links a:hover, .topbar-links a.active { background:var(--gold); border-color:var(--gold); color:#0E0D0B; }
+
+/* hero with image */
+.hero-image { position:relative; max-width:720px; margin:24px auto 0; overflow:hidden; border-radius:12px;
+  border:1px solid var(--line); }
+.hero-image img { width:100%; display:block; max-height:320px; object-fit:cover; object-position:center 22%; }
+.hero-image::after { content:''; position:absolute; left:0; right:0; bottom:0; height:80px;
+  background:linear-gradient(180deg, transparent, rgba(14,13,11,0.9)); pointer-events:none; }
+
+.hero { max-width:1100px; margin:0 auto; padding:32px 48px 28px; }
+.hero.no-image { padding-top:72px; }
+.eyebrow { font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700; color:var(--gold);
+  letter-spacing:0.22em; text-transform:uppercase; margin-bottom:18px; display:inline-block;
+  padding:6px 14px; border:1px solid var(--line-strong); border-radius:4px; background:rgba(245,184,46,0.06); }
+.hero h1 { font-family:'Anton', sans-serif; font-size:96px; font-weight:400;
+  letter-spacing:0.005em; line-height:0.95; color:var(--ink); margin-bottom:22px;
+  text-transform:uppercase; }
+.hero h1 em { font-style:normal; color:var(--gold);
+  text-shadow:0 0 32px rgba(245,184,46,0.35); }
+.hero .subtitle { font-family:'Nunito', sans-serif; font-size:21px; font-weight:600;
+  color:var(--ink-soft); max-width:820px; line-height:1.35; margin-bottom:28px; }
+.hero .meta { font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted);
+  letter-spacing:0.06em; border-top:1px solid var(--line); padding-top:18px; }
+.hero .meta strong { color:var(--gold); font-weight:700; }
+
+section { max-width:1100px; margin:0 auto; padding:40px 48px; }
+section.bordered { border-top:1px solid var(--line); }
+h2 { font-family:'Anton', sans-serif; font-size:56px; font-weight:400; letter-spacing:0.01em;
+  line-height:1.0; color:var(--ink); margin-bottom:14px; text-transform:uppercase; }
+h2 em { font-style:normal; color:var(--gold); text-shadow:0 0 24px rgba(245,184,46,0.3); }
+.lede { font-size:17px; color:var(--ink-soft); margin-bottom:32px; max-width:880px; line-height:1.55; }
+.lede a { color:var(--gold); text-decoration:none; border-bottom:1px solid var(--line-strong); }
+.lede a:hover { border-bottom-color:var(--gold); }
+
+.stats { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin:24px 0 8px; }
+.stat { background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:26px 28px;
+  border-top:4px solid var(--gold); position:relative; overflow:hidden; }
+.stat.out { border-top-color:var(--out); }
+.stat::after { content:''; position:absolute; top:0; right:0; width:120px; height:120px;
+  background:radial-gradient(circle, rgba(245,184,46,0.10), transparent 70%); pointer-events:none; }
+.stat .label { font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:700;
+  color:var(--muted); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:12px; }
+.stat .value { font-family:'Anton', sans-serif; font-size:44px; font-weight:400;
+  color:var(--ink); letter-spacing:0.01em; line-height:1; }
+.stat.in .value { color:var(--gold); }
+.stat.out .value { color:var(--out); }
+.stat .sub { font-size:12px; color:var(--muted); margin-top:8px; font-family:'JetBrains Mono', monospace; }
+
+.cards { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; margin-top:24px; }
+.card { background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:18px 20px;
+  border-left:4px solid var(--gold); transition:all .15s; }
+.card:hover { transform:translateY(-2px); border-color:var(--line-strong);
+  box-shadow:0 6px 20px rgba(245,184,46,0.10); }
+.card .top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; gap:12px; }
+.card .nome { font-family:'Nunito', sans-serif; font-weight:800; font-size:15px; color:var(--ink); }
+.card .valor { font-family:'Anton', sans-serif; font-weight:400; font-size:22px; color:var(--gold); letter-spacing:0.01em; }
+.card .meta { font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--muted);
+  letter-spacing:0.06em; display:flex; justify-content:space-between; }
+.card .hash { color:var(--muted-light); }
+
+table { width:100%; border-collapse:collapse; background:var(--paper); border:1px solid var(--line);
+  border-radius:10px; overflow:hidden; margin-top:18px; }
+th, td { padding:14px 18px; text-align:left; border-bottom:1px solid var(--line); font-size:14px; }
+th { background:rgba(245,184,46,0.06); font-family:'JetBrains Mono', sans-serif; font-weight:700; font-size:11px;
+  color:var(--gold); text-transform:uppercase; letter-spacing:0.12em; }
+td.valor { font-family:'JetBrains Mono', monospace; font-weight:700; text-align:right; font-size:14px; }
+td.valor.in { color:var(--gold); }
+td.valor.out { color:var(--out); }
+td.hash { font-family:'JetBrains Mono', monospace; color:var(--muted); font-size:11px; }
+td.data { font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted); white-space:nowrap; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:rgba(245,184,46,0.03); }
+.tag { display:inline-block; font-family:'JetBrains Mono', monospace; font-size:10px; font-weight:700;
+  text-transform:uppercase; letter-spacing:0.08em; padding:3px 9px; border-radius:3px;
+  background:rgba(245,184,46,0.12); color:var(--gold); margin-right:6px; }
+
+.banner { background:var(--paper-2); border:1px solid var(--line); border-radius:12px; padding:32px 36px; margin:24px 0;
+  position:relative; overflow:hidden; }
+.banner::before { content:''; position:absolute; top:0; left:0; width:80px; height:4px; background:var(--gold); }
+.banner h3 { font-family:'Anton', sans-serif; font-size:28px; font-weight:400; color:var(--gold); margin-bottom:12px;
+  letter-spacing:0.02em; text-transform:uppercase; }
+.banner p { font-size:15px; line-height:1.6; color:var(--ink-soft); max-width:820px; }
+.banner code { font-family:'JetBrains Mono', monospace; background:rgba(245,184,46,0.12); padding:2px 8px;
+  border-radius:3px; font-size:13px; color:var(--gold); }
+
+footer { max-width:1100px; margin:0 auto; padding:32px 48px 64px; border-top:1px solid var(--line);
+  font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--muted);
+  letter-spacing:0.06em; }
+footer a { color:var(--gold); text-decoration:none; }
+
+.hashtags { font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--gold);
+  letter-spacing:0.08em; margin-top:24px; font-weight:600; }
+
+@media (max-width: 1024px) {
+  .hero h1 { font-size:72px; }
+  h2 { font-size:44px; }
+  .cards { grid-template-columns:repeat(2, 1fr); }
+  .hero-image img { max-height:260px; }
+}
+@media (max-width: 720px) {
+  .topbar { padding:10px 16px; flex-wrap:wrap; gap:10px; }
+  .topbar-brand { font-size:16px; }
+  .topbar-path { display:none; }
+  .topbar-links { width:100%; justify-content:space-between; gap:4px; }
+  .topbar-links a { padding:5px 8px; font-size:10px; letter-spacing:0.08em; flex:1; text-align:center; }
+  .hero { padding:24px 20px 20px; }
+  .hero.no-image { padding-top:40px; }
+  .hero h1 { font-size:44px; line-height:0.95; }
+  .hero .subtitle { font-size:17px; }
+  .hero-image { max-width:calc(100% - 40px); margin:16px auto 0; }
+  .hero-image img { max-height:220px; object-position:center 20%; }
+  .hero-image::after { height:50px; }
+  section { padding:28px 20px; }
+  h2 { font-size:34px; }
+  .stats { grid-template-columns:1fr; gap:12px; }
+  .stat { padding:20px 22px; }
+  .stat .value { font-size:36px; }
+  .cards { grid-template-columns:1fr; gap:10px; }
+  .banner { padding:24px 22px; }
+  .banner h3 { font-size:22px; }
+  table { font-size:13px; }
+  th, td { padding:10px 12px; }
+  td.hash { display:none; } /* hide hash column on mobile */
+  th:nth-child(3) { display:none; }
+  footer { padding:24px 20px 48px; }
+  .hashtags { font-size:10px; word-break:break-word; }
+}
+@media (max-width: 380px) {
+  .hero h1 { font-size:36px; }
+  .topbar-links a { font-size:9px; padding:4px 6px; }
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-brand">FUNDO <em>RAUL</em></div>
+  <div class="topbar-path">raulout · vaquinha auditável</div>
+  <div class="topbar-links">
+    <a href="index.html" class="active">Home</a>
+    <a href="entradas.html">Entradas</a>
+    <a href="saidas.html">Saídas</a>
+    <a href="contribuir.html">Contribuir</a>
+  </div>
+</div>
+
+<div class="hero-image">
+  <img src="raul-livre.jpg" alt="Movimento Raul Livre">
+</div>
+<div class="hero">
+  <div class="eyebrow">vaquinha auditável · atualizada 23/05/2026 17:37</div>
+  <h1>Movimento <em>Raul Livre</em></h1>
+  <div class="subtitle">Vaquinha do clube pra trazer o Raul de volta. Toda doação que entra e tudo que sai aparece aqui, com data, valor e hash de verificação. Mente livre. Corpo forte. Espírito inquebrável.</div>
+  <div class="meta">campanha iniciada em <strong>22/05/2026</strong> · 60 doações recebidas · fonte: extrato bancário exportado periodicamente</div>
+  <div class="hashtags">#RAULLIVRE · #MENTELIVRE · #CORPOFORTE · #ESPIRITOINQUEBRAVEL</div>
+</div>
+
+<section>
+  <div class="stats">
+    <div class="stat in"><div class="label">Total arrecadado</div><div class="value">R$ 3.380,00</div><div class="sub">60 doações</div></div>
+    <div class="stat out"><div class="label">Total destinado</div><div class="value">R$ 0,00</div><div class="sub">0 saídas</div></div>
+    <div class="stat saldo"><div class="label">Saldo em caixa</div><div class="value">R$ 3.380,00</div><div class="sub">entradas − saídas</div></div>
+  </div>
+</section>
+
+<section class="bordered">
+  <h2>Últimas <em>doações</em></h2>
+  <p class="lede">Quem contribuiu nas últimas 12 entradas. Veja o <a href="entradas.html">extrato completo</a> ou <a href="contribuir.html">contribua</a>.</p>
+  <div class="cards"><div class="card">
+          <div class="top">
+            <span class="nome">Silvio M. V.</span>
+            <span class="valor">R$ 50,00</span>
+          </div>
+          <div class="meta"><span>23/05/2026 · 13:19</span><span class="hash">#259a8e</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Luiz G. S.</span>
+            <span class="valor">R$ 50,00</span>
+          </div>
+          <div class="meta"><span>23/05/2026 · 12:59</span><span class="hash">#c96a06</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Sydney L. M. J.</span>
+            <span class="valor">R$ 50,00</span>
+          </div>
+          <div class="meta"><span>23/05/2026 · 12:45</span><span class="hash">#5238a1</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Odecio D. C. T.</span>
+            <span class="valor">R$ 50,00</span>
+          </div>
+          <div class="meta"><span>23/05/2026 · 12:42</span><span class="hash">#d11b6e</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Luiz G. M. F.</span>
+            <span class="valor">R$ 50,00</span>
+          </div>
+          <div class="meta"><span>23/05/2026 · 12:35</span><span class="hash">#629011</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Leonir F. D. N.</span>
+            <span class="valor">R$ 100,00</span>
+          </div>
+          <div class="meta"><span>23/05/2026 · 12:20</span><span class="hash">#a31572</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Jobert W. E.</span>
+            <span class="valor">R$ 50,00</span>
+          </div>
+          <div class="meta"><span>23/05/2026 · 12:18</span><span class="hash">#baea72</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Rogerio E. G. G.</span>
+            <span class="valor">R$ 50,00</span>
+          </div>
+          <div class="meta"><span>23/05/2026 · 12:02</span><span class="hash">#dc0b2c</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Thaís P. D. M. C.</span>
+            <span class="valor">R$ 50,00</span>
+          </div>
+          <div class="meta"><span>23/05/2026 · 11:59</span><span class="hash">#bf638c</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Fabiana A. F.</span>
+            <span class="valor">R$ 50,00</span>
+          </div>
+          <div class="meta"><span>23/05/2026 · 11:55</span><span class="hash">#d562eb</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Fabiana A. F.</span>
+            <span class="valor">R$ 100,00</span>
+          </div>
+          <div class="meta"><span>23/05/2026 · 11:54</span><span class="hash">#d562eb</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Andrea R. O.</span>
+            <span class="valor">R$ 50,00</span>
+          </div>
+          <div class="meta"><span>23/05/2026 · 11:53</span><span class="hash">#be28a8</span></div>
+        </div></div>
+</section>
+
+<section class="bordered">
+  <div class="banner">
+    <h3>Como funciona a auditoria</h3>
+    <p>Cada doação é capturada do extrato bancário oficial e exibida com nome anonimizado (primeiro nome + iniciais) e um <code>#hash</code> de 6 caracteres derivado do nome completo. Quem doou consegue achar a própria contribuição pelo hash. As saídas são lançadas manualmente com categoria, descrição e link pro comprovante. O total de entradas menos saídas precisa bater com o saldo da conta — qualquer divergência é pública.</p>
+  </div>
+</section>
+
+<footer>
+  Atualizado em <strong>23/05/2026 17:37</strong> · código-fonte em <a href="https://github.com">github</a> ·
+  toda movimentação aparece aqui — entradas vêm do extrato bancário exportado e anonimizado,
+  saídas são publicadas com comprovante.
+</footer>
+</body>
+</html>

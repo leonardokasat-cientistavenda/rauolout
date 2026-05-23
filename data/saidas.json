@@ -1,0 +1,4 @@
+{
+  "_comentario": "Saídas do fundo. Cada item: data ISO, categoria (advogado|pensao|familia|custas|outros), descricao, valor (float), comprovante_url (opcional)",
+  "saidas": []
+}
