@@ -260,11 +260,43 @@ footer a { color:var(--gold); text-decoration:none; }
 .hashtags { font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--gold);
   letter-spacing:0.08em; margin-top:24px; font-weight:600; }
 
+/* contribuir page */
+.pix-wrapper { display:grid; grid-template-columns: 320px 1fr; gap:48px; align-items:start; margin-top:8px; }
+.pix-qr { background:var(--paper); border:1px solid var(--line-strong); border-radius:14px;
+  padding:24px; text-align:center; box-shadow:0 0 60px rgba(245,184,46,0.15); }
+.pix-qr img { width:100%; height:auto; max-width:280px; display:block; margin:0 auto;
+  border-radius:8px; }
+.pix-qr-hint { font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--muted);
+  letter-spacing:0.12em; text-transform:uppercase; margin-top:14px; }
+.pix-info h2 { font-size:44px; margin-bottom:20px; }
+.pix-meta { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; }
+.pix-meta > div { display:flex; align-items:baseline; gap:12px; padding:10px 14px;
+  background:var(--paper); border:1px solid var(--line); border-radius:8px; }
+.pix-meta .k { font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--muted);
+  letter-spacing:0.14em; text-transform:uppercase; min-width:90px; font-weight:700; }
+.pix-meta .v { font-family:'Nunito', sans-serif; font-weight:700; color:var(--ink); font-size:15px; }
+.pix-brcode-wrap { background:var(--paper-2); border:1px solid var(--line-strong); border-radius:10px;
+  padding:16px; }
+.pix-brcode-wrap textarea { width:100%; min-height:80px; background:transparent; border:none;
+  color:var(--ink-soft); font-family:'JetBrains Mono', monospace; font-size:11px; line-height:1.5;
+  word-break:break-all; resize:none; outline:none; padding:0; }
+.pix-brcode-wrap button { width:100%; margin-top:12px; padding:14px 18px; background:var(--gold);
+  color:#0E0D0B; border:none; border-radius:8px; font-family:'Anton', sans-serif; font-size:18px;
+  letter-spacing:0.04em; text-transform:uppercase; cursor:pointer; transition:all .15s; }
+.pix-brcode-wrap button:hover { background:var(--gold-dark); transform:translateY(-1px); }
+.pix-brcode-wrap button.copied { background:#77BC00; color:#0E0D0B; }
+.pix-note { font-size:13px; color:var(--muted); margin-top:14px; font-family:'JetBrains Mono', monospace;
+  letter-spacing:0.04em; }
+
 @media (max-width: 1024px) {
   .hero h1 { font-size:72px; }
   h2 { font-size:44px; }
   .cards { grid-template-columns:repeat(2, 1fr); }
   .hero-image img { max-height:260px; }
+}
+@media (max-width: 900px) {
+  .pix-wrapper { grid-template-columns:1fr; gap:24px; }
+  .pix-qr { max-width:340px; margin:0 auto; }
 }
 @media (max-width: 720px) {
   .topbar { padding:10px 16px; flex-wrap:wrap; gap:10px; }
@@ -471,28 +503,58 @@ def page_saidas(saidas, now):
 def page_contribuir(now):
     pix_key = CFG.get("pix_chave", "")
     pix_nome = CFG.get("pix_nome", "")
-    pix_block = (
-        f'<p style="font-family:JetBrains Mono, monospace; font-size:14px; background:var(--paper); padding:12px 16px; border:1px solid var(--line); border-radius:6px; word-break:break-all;"><strong>Chave PIX:</strong> {escape(pix_key)}<br><strong>Recebedor:</strong> {escape(pix_nome)}</p>'
-        if not pix_key.startswith("PLACEHOLDER")
-        else '<p style="color:var(--muted)"><em>Chave PIX a ser publicada em breve.</em></p>'
-    )
+    pix_cidade = CFG.get("pix_cidade", "")
+    pix_brcode = CFG.get("pix_brcode", "")
     body = f"""
 <div class="hero no-image">
   <div class="eyebrow">contribuir</div>
   <h1>Como <em>ajudar</em></h1>
-  <div class="subtitle">Toda doação vai pra um único objetivo: ajudar o Raul a quitar o que precisa e voltar pra família.</div>
+  <div class="subtitle">Toda doação vai pra um único objetivo: trazer o Raul de volta pra família. Qualquer valor faz diferença.</div>
 </div>
+
 <section>
-  <h2>Via <em>PIX</em></h2>
-  {pix_block}
-  <p class="lede" style="margin-top:16px">Assim que você fizer o PIX, a entrada vai aparecer automaticamente na <a href="entradas.html">página de entradas</a> na próxima atualização do extrato (com seu nome anonimizado).</p>
+  <div class="pix-wrapper">
+    <div class="pix-qr">
+      <img src="qr-pix.svg" alt="QR Code PIX" width="280" height="280">
+      <p class="pix-qr-hint">Aponta a câmera do seu banco</p>
+    </div>
+    <div class="pix-info">
+      <h2>PIX <em>copia &amp; cola</em></h2>
+      <div class="pix-meta">
+        <div><span class="k">Chave PIX</span><span class="v">{escape(pix_key)}</span></div>
+        <div><span class="k">Recebedor</span><span class="v">{escape(pix_nome)}</span></div>
+        <div><span class="k">Cidade</span><span class="v">{escape(pix_cidade)}</span></div>
+      </div>
+      <div class="pix-brcode-wrap">
+        <textarea id="brcode" readonly>{escape(pix_brcode)}</textarea>
+        <button onclick="copyBrcode()" id="copy-btn">📋 Copiar código PIX</button>
+      </div>
+      <p class="pix-note">Cole no app do seu banco em "PIX → Copia e Cola" e escolha o valor que quiser doar.</p>
+    </div>
+  </div>
 </section>
+
 <section class="bordered">
   <div class="banner">
     <h3>Por que dá pra confiar</h3>
-    <p>Todas as entradas vêm direto do extrato bancário exportado, não de digitação manual. Toda saída tem comprovante linkado. Quem quiser auditar pode bater o saldo de caixa com a soma de entradas menos saídas a qualquer momento. E o código-fonte deste site é público.</p>
+    <p>Todas as entradas vêm direto do extrato bancário exportado, não de digitação manual. Toda saída tem comprovante linkado. Quem quiser auditar pode bater o saldo de caixa com a soma de entradas menos saídas a qualquer momento. O <a href="https://github.com/leonardokasat-cientistavenda/rauolout" style="color:var(--gold)">código-fonte</a> deste site é público.</p>
   </div>
+  <p class="lede" style="margin-top:24px">Assim que você fizer o PIX, sua doação vai aparecer na <a href="entradas.html">página de entradas</a> na próxima atualização (com nome anonimizado e hash de verificação).</p>
 </section>
+
+<script>
+function copyBrcode() {{
+  const t = document.getElementById('brcode');
+  t.select();
+  navigator.clipboard.writeText(t.value).then(() => {{
+    const b = document.getElementById('copy-btn');
+    const orig = b.innerHTML;
+    b.innerHTML = '✓ Copiado!';
+    b.classList.add('copied');
+    setTimeout(() => {{ b.innerHTML = orig; b.classList.remove('copied'); }}, 2000);
+  }});
+}}
+</script>
 """
     return page("contribuir", "Contribuir", body, now)
 

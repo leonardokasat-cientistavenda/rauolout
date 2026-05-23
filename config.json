@@ -2,8 +2,10 @@
   "projeto": "raulout",
   "titulo": "Fundo Raul",
   "subtitulo": "Apoio do clube ao Raul — vaquinha auditável",
-  "pix_chave": "PLACEHOLDER_PIX_KEY",
-  "pix_nome": "PLACEHOLDER_NOME_RECEBEDOR",
+  "pix_chave": "30239876881",
+  "pix_nome": "Leonardo Rafid Kasat",
+  "pix_cidade": "Campinas",
+  "pix_brcode": "00020126330014br.gov.bcb.pix0111302398768815204000053039865802BR5920LEONARDO RAFID KASAT6008CAMPINAS62070503***63048972",
   "campanha_inicio": "2026-05-22T21:34:00",
   "hash_salt": "raulout-2026-publico",
   "contato": "leonardo@zazvendas.com.br"
