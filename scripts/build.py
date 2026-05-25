@@ -18,6 +18,9 @@ import re
 from datetime import datetime
 from pathlib import Path
 from html import escape
+from zoneinfo import ZoneInfo
+
+TZ_BR = ZoneInfo("America/Sao_Paulo")
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
@@ -565,7 +568,7 @@ def main() -> None:
     SITE.mkdir(exist_ok=True)
     entradas = coletar_entradas()
     saidas = coletar_saidas()
-    now = datetime.now().strftime("%d/%m/%Y %H:%M")
+    now = datetime.now(TZ_BR).strftime("%d/%m/%Y %H:%M")
 
     (SITE / "index.html").write_text(page_home(entradas, saidas, now), encoding="utf-8")
     (SITE / "entradas.html").write_text(page_entradas(entradas, now), encoding="utf-8")
