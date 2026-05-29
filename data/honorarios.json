@@ -1,0 +1,6 @@
+{
+  "_comentario": "Override de classificação. Lançamentos 'Pix enviado para Camilla' que são HONORÁRIOS dela (despesa do fundo / Conta 1, categoria advogado) — NÃO reembolso (Conta 2). Identifica por (data ISO, valor).",
+  "honorarios": [
+    { "data": "2026-05-29T16:29:21", "valor": 1600.00, "descricao": "Honorários advocatícios (2 honorários)" }
+  ]
+}
