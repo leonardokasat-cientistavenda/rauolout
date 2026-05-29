@@ -1,0 +1,18 @@
+{
+  "_comentario": "Conta 2 — saídas da Camilla (o que ela fez com o recurso). categoria: uber|mercado|roupas|outros. data ISO opcional (null se não informada).",
+  "gastos": [
+    { "data": null, "categoria": "uber",    "descricao": "Uber", "valor": 17.98 },
+    { "data": null, "categoria": "uber",    "descricao": "Uber", "valor": 16.60 },
+    { "data": null, "categoria": "uber",    "descricao": "Uber", "valor": 20.97 },
+    { "data": null, "categoria": "uber",    "descricao": "Uber", "valor": 20.98 },
+    { "data": null, "categoria": "uber",    "descricao": "Uber", "valor": 12.98 },
+    { "data": null, "categoria": "uber",    "descricao": "Uber", "valor": 12.98 },
+    { "data": null, "categoria": "mercado", "descricao": "Mercado", "valor": 173.60 },
+    { "data": null, "categoria": "uber",    "descricao": "Uber", "valor": 16.99 },
+    { "data": null, "categoria": "uber",    "descricao": "Uber", "valor": 21.98 },
+    { "data": null, "categoria": "uber",    "descricao": "Uber", "valor": 13.97 },
+    { "data": null, "categoria": "roupas",  "descricao": "Roupas", "valor": 706.00 },
+    { "data": null, "categoria": "uber",    "descricao": "Uber", "valor": 12.98 },
+    { "data": null, "categoria": "mercado", "descricao": "Mercado", "valor": 230.32 }
+  ]
+}

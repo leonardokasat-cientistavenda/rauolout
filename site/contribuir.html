@@ -133,6 +133,16 @@ footer a { color:var(--gold); text-decoration:none; }
 .hashtags { font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--gold);
   letter-spacing:0.08em; margin-top:24px; font-weight:600; }
 
+.ledger-label { font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700;
+  color:var(--gold); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:14px;
+  padding-bottom:8px; border-bottom:1px solid var(--line); }
+.cat-grid { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+.cat-chip { background:var(--paper); border:1px solid var(--line); border-radius:8px;
+  padding:12px 18px; display:flex; flex-direction:column; gap:4px; min-width:140px; }
+.cat-chip .cat-name { font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--muted);
+  letter-spacing:0.1em; text-transform:uppercase; }
+.cat-chip .cat-val { font-family:'Anton', sans-serif; font-size:22px; color:var(--gold); letter-spacing:0.01em; }
+
 /* contribuir page */
 .pix-wrapper { display:grid; grid-template-columns: 320px 1fr; gap:48px; align-items:start; margin-top:8px; }
 .pix-qr { background:var(--paper); border:1px solid var(--line-strong); border-radius:14px;
@@ -214,10 +224,11 @@ footer a { color:var(--gold); text-decoration:none; }
     <a href="index.html">Home</a>
     <a href="entradas.html">Entradas</a>
     <a href="saidas.html">Saídas</a>
+    <a href="camilla.html">Camilla</a>
     <a href="contribuir.html" class="active">Contribuir</a>
   </div>
 </div>
-<div class="updated-bar">Última atualização <strong>25/05/2026 09:48</strong></div>
+<div class="updated-bar">Última atualização <strong>29/05/2026 13:52</strong></div>
 
 <div class="hero no-image">
   <div class="eyebrow">contribuir</div>
@@ -270,7 +281,7 @@ function copyBrcode() {
 </script>
 
 <footer>
-  Atualizado em <strong>25/05/2026 09:48</strong> · código-fonte em <a href="https://github.com">github</a> ·
+  Atualizado em <strong>29/05/2026 13:52</strong> · código-fonte em <a href="https://github.com">github</a> ·
   toda movimentação aparece aqui — entradas vêm do extrato bancário exportado e anonimizado,
   saídas são publicadas com comprovante.
 </footer>

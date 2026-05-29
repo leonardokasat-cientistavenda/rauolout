@@ -133,6 +133,16 @@ footer a { color:var(--gold); text-decoration:none; }
 .hashtags { font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--gold);
   letter-spacing:0.08em; margin-top:24px; font-weight:600; }
 
+.ledger-label { font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700;
+  color:var(--gold); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:14px;
+  padding-bottom:8px; border-bottom:1px solid var(--line); }
+.cat-grid { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+.cat-chip { background:var(--paper); border:1px solid var(--line); border-radius:8px;
+  padding:12px 18px; display:flex; flex-direction:column; gap:4px; min-width:140px; }
+.cat-chip .cat-name { font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--muted);
+  letter-spacing:0.1em; text-transform:uppercase; }
+.cat-chip .cat-val { font-family:'Anton', sans-serif; font-size:22px; color:var(--gold); letter-spacing:0.01em; }
+
 /* contribuir page */
 .pix-wrapper { display:grid; grid-template-columns: 320px 1fr; gap:48px; align-items:start; margin-top:8px; }
 .pix-qr { background:var(--paper); border:1px solid var(--line-strong); border-radius:14px;
@@ -214,34 +224,76 @@ footer a { color:var(--gold); text-decoration:none; }
     <a href="index.html" class="active">Home</a>
     <a href="entradas.html">Entradas</a>
     <a href="saidas.html">Saídas</a>
+    <a href="camilla.html">Camilla</a>
     <a href="contribuir.html">Contribuir</a>
   </div>
 </div>
-<div class="updated-bar">Última atualização <strong>25/05/2026 09:48</strong></div>
+<div class="updated-bar">Última atualização <strong>29/05/2026 13:52</strong></div>
 
 <div class="hero-image">
   <img src="raul-livre.jpg" alt="Movimento Raul Livre">
 </div>
 <div class="hero">
-  <div class="eyebrow">vaquinha auditável · atualizada 25/05/2026 09:48</div>
+  <div class="eyebrow">vaquinha auditável · atualizada 29/05/2026 13:52</div>
   <h1>Movimento <em>Raul Livre</em></h1>
   <div class="subtitle">Vaquinha do clube pra trazer o Raul de volta. Toda doação que entra e tudo que sai aparece aqui, com data, valor e hash de verificação. Mente livre. Corpo forte. Espírito inquebrável.</div>
-  <div class="meta">campanha iniciada em <strong>22/05/2026</strong> · 75 doações recebidas · fonte: extrato bancário exportado periodicamente</div>
+  <div class="meta">campanha iniciada em <strong>22/05/2026</strong> · 80 doações recebidas · fonte: extrato bancário exportado periodicamente</div>
   <div class="hashtags">#RAULLIVRE · #MENTELIVRE · #CORPOFORTE · #ESPIRITOINQUEBRAVEL</div>
 </div>
 
 <section>
+  <div class="ledger-label">Conta 1 · Fundo (arrecadação)</div>
   <div class="stats">
-    <div class="stat in"><div class="label">Total arrecadado</div><div class="value">R$ 4.280,00</div><div class="sub">75 doações</div></div>
-    <div class="stat out"><div class="label">Total destinado</div><div class="value">R$ 200,00</div><div class="sub">1 saídas</div></div>
-    <div class="stat saldo"><div class="label">Saldo em caixa</div><div class="value">R$ 4.080,00</div><div class="sub">entradas − saídas</div></div>
+    <div class="stat in"><div class="label">Total arrecadado</div><div class="value">R$ 4.780,00</div><div class="sub">80 doações</div></div>
+    <div class="stat out"><div class="label">Total destinado</div><div class="value">R$ 1.400,00</div><div class="sub">5 repasses</div></div>
+    <div class="stat saldo"><div class="label">Saldo em caixa</div><div class="value">R$ 3.380,00</div><div class="sub">arrecadado − destinado</div></div>
   </div>
+</section>
+
+<section>
+  <div class="ledger-label">Conta 2 · Camilla (uso do recurso)</div>
+  <div class="stats">
+    <div class="stat in"><div class="label">Recebido do fundo</div><div class="value">R$ 1.400,00</div><div class="sub">5 repasses</div></div>
+    <div class="stat out"><div class="label">Gasto</div><div class="value">R$ 1.278,33</div><div class="sub">13 lançamentos</div></div>
+    <div class="stat saldo"><div class="label">Saldo com a Camilla</div><div class="value">R$ 121,67</div><div class="sub">recebido − gasto</div></div>
+  </div>
+  <p class="lede" style="margin-top:16px">Detalhe de cada gasto da Camilla na <a href="camilla.html">prestação de contas</a>.</p>
 </section>
 
 <section class="bordered">
   <h2>Últimas <em>doações</em></h2>
   <p class="lede">Quem contribuiu nas últimas 12 entradas. Veja o <a href="entradas.html">extrato completo</a> ou <a href="contribuir.html">contribua</a>.</p>
   <div class="cards"><div class="card">
+          <div class="top">
+            <span class="nome">Bruno B. B.</span>
+            <span class="valor">R$ 200,00</span>
+          </div>
+          <div class="meta"><span>27/05/2026 · 23:22</span><span class="hash">#b724a0</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Dimitrius D. D.</span>
+            <span class="valor">R$ 50,00</span>
+          </div>
+          <div class="meta"><span>25/05/2026 · 22:17</span><span class="hash">#da464d</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Otavio C. D. D. S.</span>
+            <span class="valor">R$ 100,00</span>
+          </div>
+          <div class="meta"><span>25/05/2026 · 20:28</span><span class="hash">#4c85fc</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Thaisnovaes M. P.</span>
+            <span class="valor">R$ 50,00</span>
+          </div>
+          <div class="meta"><span>25/05/2026 · 15:27</span><span class="hash">#bb32b0</span></div>
+        </div><div class="card">
+          <div class="top">
+            <span class="nome">Daniel D. C. A.</span>
+            <span class="valor">R$ 100,00</span>
+          </div>
+          <div class="meta"><span>25/05/2026 · 13:10</span><span class="hash">#e4be58</span></div>
+        </div><div class="card">
           <div class="top">
             <span class="nome">Jose N. A.</span>
             <span class="valor">R$ 50,00</span>
@@ -283,48 +335,18 @@ footer a { color:var(--gold); text-decoration:none; }
             <span class="valor">R$ 50,00</span>
           </div>
           <div class="meta"><span>23/05/2026 · 19:47</span><span class="hash">#ed611c</span></div>
-        </div><div class="card">
-          <div class="top">
-            <span class="nome">Diego L. N. B.</span>
-            <span class="valor">R$ 100,00</span>
-          </div>
-          <div class="meta"><span>23/05/2026 · 18:27</span><span class="hash">#de21a5</span></div>
-        </div><div class="card">
-          <div class="top">
-            <span class="nome">Marcelo J. D. M.</span>
-            <span class="valor">R$ 50,00</span>
-          </div>
-          <div class="meta"><span>23/05/2026 · 16:21</span><span class="hash">#900d7f</span></div>
-        </div><div class="card">
-          <div class="top">
-            <span class="nome">Raphael S. S.</span>
-            <span class="valor">R$ 50,00</span>
-          </div>
-          <div class="meta"><span>23/05/2026 · 16:16</span><span class="hash">#3aaae6</span></div>
-        </div><div class="card">
-          <div class="top">
-            <span class="nome">Mauricio L. P. D. A.</span>
-            <span class="valor">R$ 50,00</span>
-          </div>
-          <div class="meta"><span>23/05/2026 · 15:31</span><span class="hash">#75afd6</span></div>
-        </div><div class="card">
-          <div class="top">
-            <span class="nome">Thiago M. S.</span>
-            <span class="valor">R$ 100,00</span>
-          </div>
-          <div class="meta"><span>23/05/2026 · 15:25</span><span class="hash">#70c8b2</span></div>
         </div></div>
 </section>
 
 <section class="bordered">
   <div class="banner">
     <h3>Como funciona a auditoria</h3>
-    <p>Cada doação é capturada do extrato bancário oficial e exibida com nome anonimizado (primeiro nome + iniciais) e um <code>#hash</code> de 6 caracteres derivado do nome completo. Quem doou consegue achar a própria contribuição pelo hash. As saídas são lançadas manualmente com categoria, descrição e link pro comprovante. O total de entradas menos saídas precisa bater com o saldo da conta — qualquer divergência é pública.</p>
+    <p>São <strong>duas contas</strong>. A <strong>Conta 1 (fundo)</strong> registra as doações (capturadas do extrato bancário, nome anonimizado + <code>#hash</code> de verificação) e os repasses pra Camilla. A <strong>Conta 2 (Camilla)</strong> registra o que ela recebeu do fundo e o que gastou com isso. O dinheiro repassado na Conta 1 entra como recebido na Conta 2 — os dois batem. Qualquer divergência é pública.</p>
   </div>
 </section>
 
 <footer>
-  Atualizado em <strong>25/05/2026 09:48</strong> · código-fonte em <a href="https://github.com">github</a> ·
+  Atualizado em <strong>29/05/2026 13:52</strong> · código-fonte em <a href="https://github.com">github</a> ·
   toda movimentação aparece aqui — entradas vêm do extrato bancário exportado e anonimizado,
   saídas são publicadas com comprovante.
 </footer>

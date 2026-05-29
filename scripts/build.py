@@ -104,7 +104,45 @@ def coletar_entradas() -> list[dict]:
     return entradas
 
 
-def coletar_saidas() -> list[dict]:
+PIX_ENVIADO_RE = re.compile(r"^Pix enviado para\s+(.+?)\s*$", re.IGNORECASE)
+BENEFICIARIO = CFG.get("beneficiario", "")
+
+
+def coletar_repasses() -> list[dict]:
+    """Conta 1 — saídas do fundo: repasses ao beneficiário (auto-detectados do extrato)."""
+    alvo = BENEFICIARIO.strip().lower()
+    repasses: list[dict] = []
+    vistos: set[tuple] = set()
+    for csv_path in sorted((DATA / "extratos").glob("*.csv")):
+        with csv_path.open(encoding="utf-8") as f:
+            reader = csv.DictReader(f, delimiter=";")
+            for row in reader:
+                desc = (row.get("Descricao") or "").strip()
+                m = PIX_ENVIADO_RE.match(desc)
+                if not m or m.group(1).strip().lower() != alvo:
+                    continue
+                dt = parse_data(row["Data"], row["Hora"])
+                if dt < CUTOFF:
+                    continue
+                valor = abs(parse_valor(row.get("Valor", "")))
+                if valor <= 0:
+                    continue
+                key = (dt.isoformat(), valor)
+                if key in vistos:
+                    continue
+                vistos.add(key)
+                repasses.append({
+                    "datetime": dt.isoformat(),
+                    "data": dt.strftime("%d/%m/%Y"),
+                    "hora": dt.strftime("%H:%M"),
+                    "valor": valor,
+                })
+    repasses.sort(key=lambda x: x["datetime"], reverse=True)
+    return repasses
+
+
+def coletar_saidas_avulsas() -> list[dict]:
+    """Conta 1 — saídas avulsas do fundo (não-beneficiário), curadas em saidas.json."""
     raw = json.loads((DATA / "saidas.json").read_text()).get("saidas", [])
     out = []
     for s in raw:
@@ -121,6 +159,21 @@ def coletar_saidas() -> list[dict]:
     return out
 
 
+def coletar_gastos_camilla() -> list[dict]:
+    """Conta 2 — saídas da Camilla (o que fez com o recurso)."""
+    raw = json.loads((DATA / "camilla_gastos.json").read_text()).get("gastos", [])
+    out = []
+    for i, g in enumerate(raw):
+        out.append({
+            "ordem": i,
+            "data": (datetime.fromisoformat(g["data"]).strftime("%d/%m/%Y") if g.get("data") else None),
+            "categoria": g.get("categoria", "outros"),
+            "descricao": g.get("descricao", ""),
+            "valor": float(g["valor"]),
+        })
+    return out
+
+
 # ── Render ────────────────────────────────────────────────────────────────────
 
 def fmt_brl(v: float) -> str:
@@ -134,6 +187,9 @@ CATEGORIA_LABEL = {
     "pensao": "Pensão alimentícia",
     "familia": "Família / sustento",
     "custas": "Custas judiciais",
+    "uber": "Transporte (Uber)",
+    "mercado": "Mercado",
+    "roupas": "Roupas",
     "outros": "Outros",
 }
 
@@ -263,6 +319,16 @@ footer a { color:var(--gold); text-decoration:none; }
 .hashtags { font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--gold);
   letter-spacing:0.08em; margin-top:24px; font-weight:600; }
 
+.ledger-label { font-family:'JetBrains Mono', monospace; font-size:12px; font-weight:700;
+  color:var(--gold); letter-spacing:0.14em; text-transform:uppercase; margin-bottom:14px;
+  padding-bottom:8px; border-bottom:1px solid var(--line); }
+.cat-grid { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+.cat-chip { background:var(--paper); border:1px solid var(--line); border-radius:8px;
+  padding:12px 18px; display:flex; flex-direction:column; gap:4px; min-width:140px; }
+.cat-chip .cat-name { font-family:'JetBrains Mono', monospace; font-size:10px; color:var(--muted);
+  letter-spacing:0.1em; text-transform:uppercase; }
+.cat-chip .cat-val { font-family:'Anton', sans-serif; font-size:22px; color:var(--gold); letter-spacing:0.01em; }
+
 /* contribuir page */
 .pix-wrapper { display:grid; grid-template-columns: 320px 1fr; gap:48px; align-items:start; margin-top:8px; }
 .pix-qr { background:var(--paper); border:1px solid var(--line-strong); border-radius:14px;
@@ -350,6 +416,7 @@ def topbar(active: str) -> str:
     {link('home', 'index.html', 'Home')}
     {link('entradas', 'entradas.html', 'Entradas')}
     {link('saidas', 'saidas.html', 'Saídas')}
+    {link('camilla', 'camilla.html', 'Camilla')}
     {link('contribuir', 'contribuir.html', 'Contribuir')}
   </div>
 </div>"""
@@ -384,10 +451,14 @@ def page(active: str, title: str, body: str, now: str) -> str:
 </html>"""
 
 
-def page_home(entradas, saidas, now):
+def page_home(entradas, repasses, saidas_avulsas, gastos_camilla, now):
     total_in = sum(e["valor"] for e in entradas)
-    total_out = sum(s["valor"] for s in saidas)
+    total_repasses = sum(r["valor"] for r in repasses)
+    total_avulsas = sum(s["valor"] for s in saidas_avulsas)
+    total_out = total_repasses + total_avulsas
     saldo = total_in - total_out
+    total_gasto = sum(g["valor"] for g in gastos_camilla)
+    saldo_camilla = total_repasses - total_gasto
     qtd = len(entradas)
     primeiros_cards = "".join(
         f"""<div class="card">
@@ -411,11 +482,22 @@ def page_home(entradas, saidas, now):
 </div>
 
 <section>
+  <div class="ledger-label">Conta 1 · Fundo (arrecadação)</div>
   <div class="stats">
     <div class="stat in"><div class="label">Total arrecadado</div><div class="value">{fmt_brl(total_in)}</div><div class="sub">{qtd} doações</div></div>
-    <div class="stat out"><div class="label">Total destinado</div><div class="value">{fmt_brl(total_out)}</div><div class="sub">{len(saidas)} saídas</div></div>
-    <div class="stat saldo"><div class="label">Saldo em caixa</div><div class="value">{fmt_brl(saldo)}</div><div class="sub">entradas − saídas</div></div>
+    <div class="stat out"><div class="label">Total destinado</div><div class="value">{fmt_brl(total_out)}</div><div class="sub">{len(repasses)} repasses{f' + {len(saidas_avulsas)} avulsas' if saidas_avulsas else ''}</div></div>
+    <div class="stat saldo"><div class="label">Saldo em caixa</div><div class="value">{fmt_brl(saldo)}</div><div class="sub">arrecadado − destinado</div></div>
   </div>
+</section>
+
+<section>
+  <div class="ledger-label">Conta 2 · Camilla (uso do recurso)</div>
+  <div class="stats">
+    <div class="stat in"><div class="label">Recebido do fundo</div><div class="value">{fmt_brl(total_repasses)}</div><div class="sub">{len(repasses)} repasses</div></div>
+    <div class="stat out"><div class="label">Gasto</div><div class="value">{fmt_brl(total_gasto)}</div><div class="sub">{len(gastos_camilla)} lançamentos</div></div>
+    <div class="stat saldo"><div class="label">Saldo com a Camilla</div><div class="value">{fmt_brl(saldo_camilla)}</div><div class="sub">recebido − gasto</div></div>
+  </div>
+  <p class="lede" style="margin-top:16px">Detalhe de cada gasto da Camilla na <a href="camilla.html">prestação de contas</a>.</p>
 </section>
 
 <section class="bordered">
@@ -427,7 +509,7 @@ def page_home(entradas, saidas, now):
 <section class="bordered">
   <div class="banner">
     <h3>Como funciona a auditoria</h3>
-    <p>Cada doação é capturada do extrato bancário oficial e exibida com nome anonimizado (primeiro nome + iniciais) e um <code>#hash</code> de 6 caracteres derivado do nome completo. Quem doou consegue achar a própria contribuição pelo hash. As saídas são lançadas manualmente com categoria, descrição e link pro comprovante. O total de entradas menos saídas precisa bater com o saldo da conta — qualquer divergência é pública.</p>
+    <p>São <strong>duas contas</strong>. A <strong>Conta 1 (fundo)</strong> registra as doações (capturadas do extrato bancário, nome anonimizado + <code>#hash</code> de verificação) e os repasses pra Camilla. A <strong>Conta 2 (Camilla)</strong> registra o que ela recebeu do fundo e o que gastou com isso. O dinheiro repassado na Conta 1 entra como recebido na Conta 2 — os dois batem. Qualquer divergência é pública.</p>
   </div>
 </section>
 """
@@ -461,46 +543,97 @@ def page_entradas(entradas, now):
     return page("entradas", "Entradas", body, now)
 
 
-def page_saidas(saidas, now):
-    if not saidas:
-        body = f"""
-<div class="hero no-image">
-  <div class="eyebrow">extrato · saídas</div>
-  <h1>Todas as <em>saídas</em></h1>
-  <div class="subtitle">Pra onde foi cada centavo do fundo. Por enquanto, nada foi destinado.</div>
-  <div class="meta">categorias previstas: advogado · pensão · família · custas judiciais · outros</div>
-</div>
-<section>
-  <div class="banner">
-    <h3>Sem destinações ainda</h3>
-    <p>Quando o fundo começar a ser usado (pagamento de advogado, pensão, sustento da família, custas judiciais), cada saída vai aparecer aqui com data, categoria, valor e link pro comprovante. Toda saída precisa ter comprovante. Sem exceção.</p>
-  </div>
-</section>
-"""
-    else:
-        rows = "".join(
+def page_saidas(repasses, saidas_avulsas, now):
+    total_rep = sum(r["valor"] for r in repasses)
+    total_av = sum(s["valor"] for s in saidas_avulsas)
+    total = total_rep + total_av
+    rep_rows = "".join(
+        f"""<tr>
+          <td class="data">{r['data']} {r['hora']}</td>
+          <td><span class="tag">Repasse → Camilla</span></td>
+          <td class="valor out">-{fmt_brl(r['valor'])}</td>
+        </tr>""" for r in repasses
+    )
+    av_block = ""
+    if saidas_avulsas:
+        av_rows = "".join(
             f"""<tr>
               <td class="data">{s['data']}</td>
               <td><span class="tag">{escape(CATEGORIA_LABEL.get(s['categoria'], s['categoria']))}</span> {escape(s['descricao'])}</td>
               <td class="valor out">-{fmt_brl(s['valor'])}</td>
-              <td>{f'<a href={escape(s["comprovante_url"])}>comprovante</a>' if s.get('comprovante_url') else '<span style="color:var(--muted-light)">—</span>'}</td>
-            </tr>""" for s in saidas
+            </tr>""" for s in saidas_avulsas
         )
-        total = sum(s["valor"] for s in saidas)
-        body = f"""
+        av_block = f"""
+<section class="bordered">
+  <h2>Saídas <em>avulsas</em></h2>
+  <p class="lede">Saídas do fundo não destinadas à Camilla (taxas, estornos).</p>
+  <table>
+    <thead><tr><th>Data</th><th>Destinação</th><th style="text-align:right">Valor</th></tr></thead>
+    <tbody>{av_rows}</tbody>
+  </table>
+</section>"""
+    body = f"""
 <div class="hero no-image">
-  <div class="eyebrow">extrato · saídas</div>
+  <div class="eyebrow">conta 1 · saídas do fundo</div>
   <h1>Todas as <em>saídas</em></h1>
-  <div class="subtitle">Pra onde foi cada centavo. {len(saidas)} lançamentos · total <strong>{fmt_brl(total)}</strong>.</div>
+  <div class="subtitle">Pra onde foi o dinheiro do fundo. {len(repasses)} repasses pra Camilla · total <strong>{fmt_brl(total)}</strong>.</div>
+  <div class="meta">repasses detectados direto do extrato bancário (Pix enviado para {escape(BENEFICIARIO)}) · o que a Camilla fez com isso está na <a href="camilla.html" style="color:var(--gold)">prestação de contas</a></div>
 </div>
 <section>
+  <h2>Repasses <em>à Camilla</em></h2>
   <table>
-    <thead><tr><th>Data</th><th>Destinação</th><th style="text-align:right">Valor</th><th>Comprovante</th></tr></thead>
-    <tbody>{rows}</tbody>
+    <thead><tr><th>Data</th><th>Destinação</th><th style="text-align:right">Valor</th></tr></thead>
+    <tbody>{rep_rows}</tbody>
+  </table>
+</section>
+{av_block}
+"""
+    return page("saidas", "Saídas", body, now)
+
+
+def page_camilla(repasses, gastos, now):
+    total_rec = sum(r["valor"] for r in repasses)
+    total_gasto = sum(g["valor"] for g in gastos)
+    saldo = total_rec - total_gasto
+    # agrupa por categoria
+    por_cat: dict[str, float] = {}
+    for g in gastos:
+        por_cat[g["categoria"]] = por_cat.get(g["categoria"], 0.0) + g["valor"]
+    cat_chips = "".join(
+        f'<div class="cat-chip"><span class="cat-name">{escape(CATEGORIA_LABEL.get(c, c))}</span><span class="cat-val">{fmt_brl(v)}</span></div>'
+        for c, v in sorted(por_cat.items(), key=lambda x: -x[1])
+    )
+    gasto_rows = "".join(
+        f"""<tr>
+          <td class="data">{g['data'] or '—'}</td>
+          <td><span class="tag">{escape(CATEGORIA_LABEL.get(g['categoria'], g['categoria']))}</span> {escape(g['descricao'])}</td>
+          <td class="valor out">-{fmt_brl(g['valor'])}</td>
+        </tr>""" for g in gastos
+    )
+    body = f"""
+<div class="hero no-image">
+  <div class="eyebrow">conta 2 · prestação de contas</div>
+  <h1>O que a <em>Camilla</em> fez</h1>
+  <div class="subtitle">A Camilla recebe o repasse do fundo e usa pra cobrir o dia a dia. Aqui está cada centavo gasto.</div>
+  <div class="meta">recebido do fundo bate com as saídas da <a href="saidas.html" style="color:var(--gold)">Conta 1</a></div>
+</div>
+<section>
+  <div class="stats">
+    <div class="stat in"><div class="label">Recebido do fundo</div><div class="value">{fmt_brl(total_rec)}</div><div class="sub">{len(repasses)} repasses</div></div>
+    <div class="stat out"><div class="label">Total gasto</div><div class="value">{fmt_brl(total_gasto)}</div><div class="sub">{len(gastos)} lançamentos</div></div>
+    <div class="stat saldo"><div class="label">Saldo com a Camilla</div><div class="value">{fmt_brl(saldo)}</div><div class="sub">recebido − gasto</div></div>
+  </div>
+  <div class="cat-grid">{cat_chips}</div>
+</section>
+<section class="bordered">
+  <h2>Gastos <em>detalhados</em></h2>
+  <table>
+    <thead><tr><th>Data</th><th>Gasto</th><th style="text-align:right">Valor</th></tr></thead>
+    <tbody>{gasto_rows}</tbody>
   </table>
 </section>
 """
-    return page("saidas", "Saídas", body, now)
+    return page("camilla", "Camilla", body, now)
 
 
 def page_contribuir(now):
@@ -567,17 +700,22 @@ function copyBrcode() {{
 def main() -> None:
     SITE.mkdir(exist_ok=True)
     entradas = coletar_entradas()
-    saidas = coletar_saidas()
+    repasses = coletar_repasses()
+    saidas_avulsas = coletar_saidas_avulsas()
+    gastos = coletar_gastos_camilla()
     now = datetime.now(TZ_BR).strftime("%d/%m/%Y %H:%M")
 
-    (SITE / "index.html").write_text(page_home(entradas, saidas, now), encoding="utf-8")
+    (SITE / "index.html").write_text(page_home(entradas, repasses, saidas_avulsas, gastos, now), encoding="utf-8")
     (SITE / "entradas.html").write_text(page_entradas(entradas, now), encoding="utf-8")
-    (SITE / "saidas.html").write_text(page_saidas(saidas, now), encoding="utf-8")
+    (SITE / "saidas.html").write_text(page_saidas(repasses, saidas_avulsas, now), encoding="utf-8")
+    (SITE / "camilla.html").write_text(page_camilla(repasses, gastos, now), encoding="utf-8")
     (SITE / "contribuir.html").write_text(page_contribuir(now), encoding="utf-8")
 
-    total = sum(e["valor"] for e in entradas)
-    print(f"✓ {len(entradas)} entradas · {fmt_brl(total)}")
-    print(f"✓ {len(saidas)} saídas")
+    total_in = sum(e["valor"] for e in entradas)
+    total_rep = sum(r["valor"] for r in repasses)
+    total_gasto = sum(g["valor"] for g in gastos)
+    print(f"✓ Conta 1 · {len(entradas)} entradas {fmt_brl(total_in)} · {len(repasses)} repasses {fmt_brl(total_rep)} · saldo {fmt_brl(total_in - total_rep - sum(s['valor'] for s in saidas_avulsas))}")
+    print(f"✓ Conta 2 · recebido {fmt_brl(total_rep)} · gasto {fmt_brl(total_gasto)} · saldo {fmt_brl(total_rep - total_gasto)}")
     print(f"✓ {SITE}/index.html")
 
 

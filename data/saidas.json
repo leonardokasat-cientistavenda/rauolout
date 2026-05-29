@@ -1,12 +1,4 @@
 {
-  "_comentario": "Saídas do fundo. Cada item: data ISO, categoria (advogado|pensao|familia|custas|outros), descricao, valor (float), comprovante_url (opcional)",
-  "saidas": [
-    {
-      "data": "2026-05-24T11:07:39",
-      "categoria": "advogado",
-      "descricao": "Repasse — Camilla de Toledo Pinto Rinaldi",
-      "valor": 200.00,
-      "comprovante_url": null
-    }
-  ]
+  "_comentario": "Saídas do fundo (Conta 1) NÃO destinadas ao beneficiário. Repasses pro beneficiário (Camilla) são auto-detectados do extrato. Use aqui só saídas avulsas (taxas, estornos). categoria: advogado|pensao|familia|custas|outros.",
+  "saidas": []
 }
